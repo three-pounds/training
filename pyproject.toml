@@ -1,0 +1,37 @@
+[project]
+name = "threepounds-training"
+version = "0.1.0"
+description = "Evidence-based training method served over MCP; composes with wger's MCP server"
+readme = "README.md"
+requires-python = ">=3.14"
+license = "AGPL-3.0-or-later"
+license-files = ["LICENSE"]
+authors = [{ name = "3 pounds contributors" }]
+dependencies = [
+    "mcp==2.3.*",
+    "uvicorn[standard]>=0.30",
+]
+
+[project.scripts]
+threepounds-training = "threepounds_training.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/threepounds_training"]
+
+[dependency-groups]
+dev = ["pytest>=8", "anyio>=4.5", "ruff>=0.6", "httpx>=0.27"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
