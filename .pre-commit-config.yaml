@@ -1,0 +1,12 @@
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+  - repo: local
+    hooks:
+      - id: private-data
+        name: private data denylist
+        entry: uv run python scripts/check_private_data.py
+        language: system
+        pass_filenames: false
