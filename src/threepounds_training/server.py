@@ -1,6 +1,9 @@
+from typing import Literal
+
 from mcp.server.mcpserver import MCPServer
 
 from threepounds_training.basis import Assessment, BasisEntry, Value, assess
+from threepounds_training.reevaluation import Scan, Verdict, reevaluate
 
 MEDICAL_NOTICE = (
     "This is not medical advice. It is a training method, not a substitute for a physician. "
@@ -19,5 +22,19 @@ def build_server() -> MCPServer:
         invalidated: only a full redesign is allowed, never a patch of the previous program.
         """
         return assess(basis, current)
+
+    @server.tool()
+    def reevaluate_body_composition(
+        scans: list[Scan],
+        lean_tolerance_kg: float | None = None,
+        protein_g_per_kg_ffm: float | None = None,
+        strength_trend: Literal["up", "flat", "down"] | None = None,
+    ) -> Verdict:
+        """Decide the next step after body-composition scans, in a fixed professional order.
+
+        Verify scan conditions, then the loss rate, then protein, then strength; the training
+        methodology is reviewed last. Nutrition findings are handed off, never prescribed.
+        """
+        return reevaluate(scans, lean_tolerance_kg, protein_g_per_kg_ffm, strength_trend)
 
     return server
