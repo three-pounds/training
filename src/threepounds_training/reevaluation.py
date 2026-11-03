@@ -3,7 +3,8 @@ from typing import Literal
 
 from pydantic import BaseModel
 
-Firmness = Literal["position_stand", "single_study", "inference"]
+from threepounds_training.registry import REGISTRY, Firmness
+
 Leaf = Literal[
     "rescan_standardized",
     "insufficient_evidence",
@@ -17,9 +18,9 @@ Leaf = Literal[
 MAX_LOSS_PCT_PER_WEEK = 1.0
 MIN_PROTEIN_G_PER_KG_FFM = 2.3
 
-ISSN_2017 = {"source": "issn-2017-diets-and-body-composition", "firmness": "position_stand"}
-INBODY_770 = {"source": "inbody-770-reliability-2024", "firmness": "single_study"}
-PRACTICE_ORDER = {"source": "professional-decision-order", "firmness": "inference"}
+ISSN_2017 = "issn-2017-diets-and-body-composition"
+INBODY_770 = "inbody-770-reliability-2024"
+PRACTICE_ORDER = "professional-decision-order"
 
 
 class Citation(BaseModel):
@@ -48,7 +49,7 @@ def _verdict(leaf, reason, handoff="none", missing=(), evidence=()):
         reason=reason,
         handoff=handoff,
         missing=list(missing),
-        evidence=[Citation(**e) for e in evidence],
+        evidence=[Citation(source=e, firmness=REGISTRY[e].firmness) for e in evidence],
     )
 
 

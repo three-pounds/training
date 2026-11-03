@@ -4,6 +4,7 @@ from mcp.server.mcpserver import MCPServer
 
 from threepounds_training.basis import Assessment, BasisEntry, Value, assess
 from threepounds_training.reevaluation import Scan, Verdict, reevaluate
+from threepounds_training.registry import REGISTRY, Check, Registry, check_citations
 
 MEDICAL_NOTICE = (
     "This is not medical advice. It is a training method, not a substitute for a physician. "
@@ -11,7 +12,8 @@ MEDICAL_NOTICE = (
 )
 
 
-def build_server() -> MCPServer:
+def build_server(registry: Registry | None = None) -> MCPServer:
+    registry = REGISTRY if registry is None else registry
     server = MCPServer("threepounds-training", instructions=MEDICAL_NOTICE)
 
     @server.tool()
@@ -36,5 +38,14 @@ def build_server() -> MCPServer:
         methodology is reviewed last. Nutrition findings are handed off, never prescribed.
         """
         return reevaluate(scans, lean_tolerance_kg, protein_g_per_kg_ffm, strength_trend)
+
+    @server.tool()
+    def check_decision_citations(citations: list[str], person_tags: list[str]) -> Check:
+        """Validate the evidence a decision cites against the evidence registry.
+
+        Rejects a decision with no citation or with a citation that is not in the registry,
+        and flags citations that conflict with each other or do not apply to the person.
+        """
+        return check_citations(citations, person_tags, registry)
 
     return server
