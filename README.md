@@ -35,8 +35,9 @@ this service for other people.
 
 ## Supported clients
 
-Built for Claude (claude.ai and Desktop) and Claude Code. End-to-end testing in those clients is
-still pending. No promise is made for other clients.
+Built for Claude Code and Claude Desktop, which can run a local stdio server. End-to-end testing
+in those clients is still pending. The claude.ai website needs a remote server, and this project
+has none yet. No promise is made for other clients.
 
 ## Run
 
