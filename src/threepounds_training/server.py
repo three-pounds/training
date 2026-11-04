@@ -3,6 +3,7 @@ from typing import Literal
 from mcp.server.mcpserver import MCPServer
 
 from threepounds_training.basis import Assessment, BasisEntry, Value, assess
+from threepounds_training.prompts import new_program, weekly_review
 from threepounds_training.reevaluation import Scan, Verdict, reevaluate
 from threepounds_training.registry import REGISTRY, Check, Registry, check_citations
 from threepounds_training.screening import DelayReason, Question, Readiness, screen
@@ -62,5 +63,13 @@ def build_server(registry: Registry | None = None) -> MCPServer:
         question 2 or 7 stops the design and recommends a physician.
         """
         return screen(yes_to_general, yes_to_followup, delay_reasons)
+
+    @server.prompt(name="nuevo-programa", description="Start a new training program safely.")
+    def nuevo_programa() -> str:
+        return new_program(MEDICAL_NOTICE)
+
+    @server.prompt(name="revisar-semana", description="Review the week and reevaluate.")
+    def revisar_semana() -> str:
+        return weekly_review(MEDICAL_NOTICE)
 
     return server
